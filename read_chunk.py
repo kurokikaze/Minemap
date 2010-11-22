@@ -98,9 +98,37 @@ def read_tag(chunk):
 		
 	return (type, name, payload)
 
-map_directory = "D:\\Minemap\\!CURRENT\\dev\\shm\\rsync\\smp2\\smp\\World10"
+def getchunkname(x, y):
+	def base36encode(number):
+		sign = ''
+		if not isinstance(number, (int, long)):
+			raise TypeError('number must be an integer')
+		if number < 0:
+			#raise ValueError('number must be positive')
+			sign = '-'
+			number = number * -1
+
+		alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
+
+		base36 = ''
+		while number:
+			number, i = divmod(number, 36)
+			base36 = alphabet[i] + base36
+
+		return sign + base36 or sign + alphabet[0]
+
+	chunk_x = -13
+	chunk_y = 44
+		
+	filename = base36encode(divmod(chunk_x, 64)[1])  + "\\" + base36encode(divmod(chunk_y, 64)[1]) + "\\c." + base36encode(chunk_x) + "." + base36encode(chunk_y) + ".dat"
+
+	return filename
 	
-chunk = gzip.open('c.3c.2c.dat', 'r')
+map_directory = "D:\\Minemap\\!CURRENT\\dev\\shm\\rsync\\smp2\\smp\\World10\\"
+	
+chunkname = map_directory + getchunkname(4,6)
+
+chunk = gzip.open(chunkname, 'r')
 
 output = read_tag(chunk)
 
@@ -159,6 +187,7 @@ mossy_coblestone = terrain.crop(get_cropbox(4,2))
 
 cobblestone_block = terrain.crop(get_cropbox(0,1))
 wood_block = terrain.crop(get_cropbox(4,0))
+# bookshelf = terrain.crop(get_cropbox(4,0))
 iron_block = terrain.crop(get_cropbox(6,1))
 gold_block = terrain.crop(get_cropbox(7,1))
 diamond_block = terrain.crop(get_cropbox(8,1))
@@ -208,6 +237,8 @@ for x in range(0, 16):
 		map.paste(halfblock, get_cropbox(x, z))
 	elif block_id == 44: # both of these will look alike from above
 		map.paste(halfblock, get_cropbox(x, z))
+	elif block_id == 47: # Bookshelf looks like wood from above
+		map.paste(wood_block, get_cropbox(x, z))
 	elif block_id == 49:
 		map.paste(mossy_coblestone, get_cropbox(x, z))
 	elif block_id == 49:
