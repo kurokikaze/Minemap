@@ -123,138 +123,141 @@ def getchunkname(x, y):
 	filename = base36encode(divmod(chunk_x, 64)[1])  + "\\" + base36encode(divmod(chunk_y, 64)[1]) + "\\c." + base36encode(chunk_x) + "." + base36encode(chunk_y) + ".dat"
 
 	return filename
-	
-map_directory = "D:\\Minemap\\!CURRENT\\dev\\shm\\rsync\\smp2\\smp\\World10\\"
-	
-chunkname = map_directory + getchunkname(4,6)
 
-chunk = gzip.open(chunkname, 'r')
+def map_chunk_slice(x, z, y = 64):	
+	map_directory = "D:\\Minemap\\!CURRENT\\dev\\shm\\rsync\\smp2\\smp\\World10\\"
+		
+	chunkname = map_directory + getchunkname(x, z)
 
-output = read_tag(chunk)
+	chunk = gzip.open(chunkname, 'r')
 
-print output[0]
+	output = read_tag(chunk)
 
-try:
-	for level in output[2]:
-		# skip end tags
-		if (level[0] == 0): 
-			continue
-			
-		for tag in level[2]:
-			if (tag[0] == 0):
+	print output[0]
+
+	try:
+		for level in output[2]:
+			# skip end tags
+			if (level[0] == 0): 
 				continue
-			print tag[1]
-			if tag[1] == "Blocks":
-				blocks = tag[2]
 				
-	print "Blocks retrieved"
-	print "Blocks count: %d" % len(blocks)
-except:
-	print "No blocks found"
-	exit(0)
+			for tag in level[2]:
+				if (tag[0] == 0):
+					continue
+				print tag[1]
+				if tag[1] == "Blocks":
+					blocks = tag[2]
+					
+		print "Blocks retrieved"
+		print "Blocks count: %d" % len(blocks)
+	except:
+		print "No blocks found"
+		exit(0)
 
-y = 77
+	# y = 77
 
-# Print map by block ID
-for z in range(0, 16):
-  for x in range (0, 16):
-    print ord(blocks[ y + ( z * 128 + (x * 128 * 16)) ]),
-  print 
-  
-def get_cropbox(x, y):
-	return (x*16, y*16, x*16 + 16, y*16 + 16)
+	# Print map by block ID
+	for z in range(0, 16):
+	  for x in range (0, 16):
+		print ord(blocks[ y + ( z * 128 + (x * 128 * 16)) ]),
+	  print 
+	  
+	def get_cropbox(x, y):
+		return (x*16, y*16, x*16 + 16, y*16 + 16)
 
-terrain = Image.open("terrain.png")
+	terrain = Image.open("terrain.png")
 
-stone = terrain.crop(get_cropbox(0,0))
-dirt = terrain.crop(get_cropbox(2,0))
-grass = terrain.crop(get_cropbox(3,0))
-gravel = terrain.crop(get_cropbox(3,1))
-sand = terrain.crop(get_cropbox(2,1))
-coal = terrain.crop(get_cropbox(2,2))
-iron = terrain.crop(get_cropbox(1,2))
-gold = terrain.crop(get_cropbox(0,2))
-redstone = terrain.crop(get_cropbox(3,3))
-diamond = terrain.crop(get_cropbox(2,3))
-obsidian = terrain.crop(get_cropbox(5,2))
-bedrock = terrain.crop(get_cropbox(1,1))
+	stone = terrain.crop(get_cropbox(0,0))
+	dirt = terrain.crop(get_cropbox(2,0))
+	grass = terrain.crop(get_cropbox(3,0))
+	gravel = terrain.crop(get_cropbox(3,1))
+	sand = terrain.crop(get_cropbox(2,1))
+	coal = terrain.crop(get_cropbox(2,2))
+	iron = terrain.crop(get_cropbox(1,2))
+	gold = terrain.crop(get_cropbox(0,2))
+	redstone = terrain.crop(get_cropbox(3,3))
+	diamond = terrain.crop(get_cropbox(2,3))
+	obsidian = terrain.crop(get_cropbox(5,2))
+	bedrock = terrain.crop(get_cropbox(1,1))
 
-clay = terrain.crop(get_cropbox(2,0))
-log = terrain.crop(get_cropbox(5,1))
-leaves = terrain.crop(get_cropbox(4,3))
-ice = terrain.crop(get_cropbox(3,4))
-mossy_coblestone = terrain.crop(get_cropbox(4,2))
+	clay = terrain.crop(get_cropbox(2,0))
+	log = terrain.crop(get_cropbox(5,1))
+	leaves = terrain.crop(get_cropbox(4,3))
+	ice = terrain.crop(get_cropbox(3,4))
+	mossy_coblestone = terrain.crop(get_cropbox(4,2))
 
-cobblestone_block = terrain.crop(get_cropbox(0,1))
-wood_block = terrain.crop(get_cropbox(4,0))
-# bookshelf = terrain.crop(get_cropbox(4,0))
-iron_block = terrain.crop(get_cropbox(6,1))
-gold_block = terrain.crop(get_cropbox(7,1))
-diamond_block = terrain.crop(get_cropbox(8,1))
-chest = terrain.crop(get_cropbox(9,1))
-tnt = terrain.crop(get_cropbox(9,0))
-glass = terrain.crop(get_cropbox(1,3))
-soil = terrain.crop(get_cropbox(7,5))
+	cobblestone_block = terrain.crop(get_cropbox(0,1))
+	wood_block = terrain.crop(get_cropbox(4,0))
+	# bookshelf = terrain.crop(get_cropbox(4,0))
+	iron_block = terrain.crop(get_cropbox(6,1))
+	gold_block = terrain.crop(get_cropbox(7,1))
+	diamond_block = terrain.crop(get_cropbox(8,1))
+	chest = terrain.crop(get_cropbox(9,1))
+	tnt = terrain.crop(get_cropbox(9,0))
+	glass = terrain.crop(get_cropbox(1,3))
+	soil = terrain.crop(get_cropbox(7,5))
 
-brick = terrain.crop(get_cropbox(7,0))
-halfblock = terrain.crop(get_cropbox(6,0))
+	brick = terrain.crop(get_cropbox(7,0))
+	halfblock = terrain.crop(get_cropbox(6,0))
 
-map = Image.new("RGB", (256, 256))
+	map = Image.new("RGB", (256, 256))
 
-# Draw map
-for x in range(0, 16):
-  for z in range (0, 16):
-	block_id = ord(blocks[ y + ( z * 128 + (x * 128 * 16)) ])
-	if block_id == 1:
-		map.paste(stone, get_cropbox(x, z))
-	if block_id == 2:
-		map.paste(grass, get_cropbox(x, z))
-	elif block_id == 3:
-		map.paste(dirt, get_cropbox(x, z))
-	elif block_id == 4:
-		map.paste(cobblestone, get_cropbox(x, z))
-	elif block_id == 5:
-		map.paste(wood_block, get_cropbox(x, z))
-	elif block_id == 7:
-		map.paste(bedrock, get_cropbox(x, z))
-	elif block_id == 12:
-		map.paste(sand, get_cropbox(x, z))
-	elif block_id == 13:
-		map.paste(gravel, get_cropbox(x, z))
-	elif block_id == 14:
-		map.paste(gold, get_cropbox(x, z))
-	elif block_id == 15:
-		map.paste(iron, get_cropbox(x, z))
-	elif block_id == 16:
-		map.paste(coal, get_cropbox(x, z))
-	elif block_id == 17:
-		map.paste(log, get_cropbox(x, z))
-	elif block_id == 18:
-		map.paste(leaves, get_cropbox(x, z))
-	elif block_id == 20:
-		map.paste(glass, get_cropbox(x, z))
-	elif block_id == 43: # both of these will look alike from above
-		map.paste(halfblock, get_cropbox(x, z))
-	elif block_id == 44: # both of these will look alike from above
-		map.paste(halfblock, get_cropbox(x, z))
-	elif block_id == 47: # Bookshelf looks like wood from above
-		map.paste(wood_block, get_cropbox(x, z))
-	elif block_id == 49:
-		map.paste(mossy_coblestone, get_cropbox(x, z))
-	elif block_id == 49:
-		map.paste(obsidian, get_cropbox(x, z))
-	elif block_id == 56:
-		map.paste(diamond, get_cropbox(x, z))
-	elif block_id == 60:
-		map.paste(soil, get_cropbox(x, z))
-	elif block_id == 73:
-		map.paste(redstone, get_cropbox(x, z))
-	elif block_id == 79:
-		map.paste(ice, get_cropbox(x, z))
-	elif block_id == 82:
-		map.paste(clay, get_cropbox(x, z))
-	
-try:
-	map.save('.\map.png', 'PNG')
-except:
-	print "Something went wrong on save"
+	# Draw map
+	for x in range(0, 16):
+	  for z in range (0, 16):
+		block_id = ord(blocks[ y + ( z * 128 + (x * 128 * 16)) ])
+		if block_id == 1:
+			map.paste(stone, get_cropbox(x, z))
+		if block_id == 2:
+			map.paste(grass, get_cropbox(x, z))
+		elif block_id == 3:
+			map.paste(dirt, get_cropbox(x, z))
+		elif block_id == 4:
+			map.paste(cobblestone, get_cropbox(x, z))
+		elif block_id == 5:
+			map.paste(wood_block, get_cropbox(x, z))
+		elif block_id == 7:
+			map.paste(bedrock, get_cropbox(x, z))
+		elif block_id == 12:
+			map.paste(sand, get_cropbox(x, z))
+		elif block_id == 13:
+			map.paste(gravel, get_cropbox(x, z))
+		elif block_id == 14:
+			map.paste(gold, get_cropbox(x, z))
+		elif block_id == 15:
+			map.paste(iron, get_cropbox(x, z))
+		elif block_id == 16:
+			map.paste(coal, get_cropbox(x, z))
+		elif block_id == 17:
+			map.paste(log, get_cropbox(x, z))
+		elif block_id == 18:
+			map.paste(leaves, get_cropbox(x, z))
+		elif block_id == 20:
+			map.paste(glass, get_cropbox(x, z))
+		elif block_id == 43: # both of these will look alike from above
+			map.paste(halfblock, get_cropbox(x, z))
+		elif block_id == 44: # both of these will look alike from above
+			map.paste(halfblock, get_cropbox(x, z))
+		elif block_id == 47: # Bookshelf looks like wood from above
+			map.paste(wood_block, get_cropbox(x, z))
+		elif block_id == 49:
+			map.paste(mossy_coblestone, get_cropbox(x, z))
+		elif block_id == 49:
+			map.paste(obsidian, get_cropbox(x, z))
+		elif block_id == 56:
+			map.paste(diamond, get_cropbox(x, z))
+		elif block_id == 60:
+			map.paste(soil, get_cropbox(x, z))
+		elif block_id == 73:
+			map.paste(redstone, get_cropbox(x, z))
+		elif block_id == 79:
+			map.paste(ice, get_cropbox(x, z))
+		elif block_id == 82:
+			map.paste(clay, get_cropbox(x, z))
+		
+	try:
+		map.save('.\map.png', 'PNG')
+	except:
+		print "Something went wrong on save"
+		
+map_chunk_slice(0,0, 78)
