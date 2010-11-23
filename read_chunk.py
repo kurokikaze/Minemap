@@ -255,9 +255,12 @@ def map_chunk_slice(x, z, y = 64):
 		elif block_id == 82:
 			map.paste(clay, get_cropbox(x, z))
 		
-	try:
-		map.save('.\map.png', 'PNG')
-	except:
-		print "Something went wrong on save"
-		
-map_chunk_slice(0,0, 78)
+	return map
+	
+image = map_chunk_slice(0,0, 77)
+
+try:
+	image.save('.\map.png', 'PNG')
+except:
+	print "Something went wrong on save"
+
