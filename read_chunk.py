@@ -98,7 +98,7 @@ def read_tag(chunk):
 		
 	return (type, name, payload)
 
-def getchunkname(x, y):
+def getchunkname(chunk_x, chunk_y):
 	def base36encode(number):
 		sign = ''
 		if not isinstance(number, (int, long)):
@@ -117,8 +117,8 @@ def getchunkname(x, y):
 
 		return sign + base36 or sign + alphabet[0]
 
-	chunk_x = -13
-	chunk_y = 44
+	#chunk_x = -13
+	#chunk_y = 44
 		
 	filename = base36encode(divmod(chunk_x, 64)[1])  + "\\" + base36encode(divmod(chunk_y, 64)[1]) + "\\c." + base36encode(chunk_x) + "." + base36encode(chunk_y) + ".dat"
 
@@ -152,15 +152,16 @@ def map_chunk_slice(x, z, y = 64):
 		print "Blocks count: %d" % len(blocks)
 	except:
 		print "No blocks found"
-		exit(0)
+		return Image.new("RGB", (256, 256))
+		#exit(0)
 
 	# y = 77
 
 	# Print map by block ID
-	for z in range(0, 16):
-	  for x in range (0, 16):
-		print ord(blocks[ y + ( z * 128 + (x * 128 * 16)) ]),
-	  print 
+#	for z in range(0, 16):
+#	  for x in range (0, 16):
+#		print ord(blocks[ y + ( z * 128 + (x * 128 * 16)) ]),
+#	  print 
 	  
 	def get_cropbox(x, y):
 		return (x*16, y*16, x*16 + 16, y*16 + 16)
@@ -257,7 +258,12 @@ def map_chunk_slice(x, z, y = 64):
 		
 	return map
 	
-image = map_chunk_slice(0,0, 77)
+imageL = map_chunk_slice(-10, 40, 76).crop((0,0,256,256))
+imageR = map_chunk_slice(-9, 40, 76).crop((0,0,256,256))
+
+image = Image.new("RGB", (512, 256))
+image.paste(imageL, (0,0,256,256))
+image.paste(imageR, (256,0,512,256))
 
 try:
 	image.save('.\map.png', 'PNG')
