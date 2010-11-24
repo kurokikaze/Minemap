@@ -258,12 +258,18 @@ def map_chunk_slice(x, z, y = 64):
 		
 	return map
 	
-imageL = map_chunk_slice(-10, 40, 76).crop((0,0,256,256))
-imageR = map_chunk_slice(-9, 40, 76).crop((0,0,256,256))
+imageLU = map_chunk_slice(-10, 40, 70).crop((0,0,256,256))
+imageRU = map_chunk_slice(-9, 40, 70).crop((0,0,256,256))
+imageLD = map_chunk_slice(-10, 41, 70).crop((0,0,256,256))
+imageRD = map_chunk_slice(-9, 41, 70).crop((0,0,256,256))
 
-image = Image.new("RGB", (512, 256))
-image.paste(imageL, (0,0,256,256))
-image.paste(imageR, (256,0,512,256))
+print "Image mode: %s" % imageLU.mode
+
+image = Image.new("RGB", (512, 512))
+image.paste(imageLU, (0,0,256,256))
+image.paste(imageRU, (256,0,512,256))
+image.paste(imageLD, (0,256,256,512))
+image.paste(imageRD, (256,256,512,512))
 
 try:
 	image.save('.\map.png', 'PNG')
