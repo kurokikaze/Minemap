@@ -187,6 +187,9 @@ def map_chunk_slice(x, z, y = 64):
 	ice = terrain.crop(get_cropbox(3,4))
 	mossy_coblestone = terrain.crop(get_cropbox(4,2))
 
+	water = terrain.crop(get_cropbox(16,14))
+	lava = terrain.crop(get_cropbox(16,16))
+
 	cobblestone_block = terrain.crop(get_cropbox(0,1))
 	wood_block = terrain.crop(get_cropbox(4,0))
 	# bookshelf = terrain.crop(get_cropbox(4,0))
@@ -219,6 +222,14 @@ def map_chunk_slice(x, z, y = 64):
 			map.paste(wood_block, get_cropbox(x, z))
 		elif block_id == 7:
 			map.paste(bedrock, get_cropbox(x, z))
+		elif block_id == 8:
+			map.paste(water, get_cropbox(x, z))
+		elif block_id == 9:
+			map.paste(water, get_cropbox(x, z))
+		elif block_id == 10:
+			map.paste(lava, get_cropbox(x, z))
+		elif block_id == 11:
+			map.paste(lava, get_cropbox(x, z))
 		elif block_id == 12:
 			map.paste(sand, get_cropbox(x, z))
 		elif block_id == 13:
