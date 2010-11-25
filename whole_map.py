@@ -1,5 +1,6 @@
 import os
 import Image
+import read_chunk
 
 map_directory = "D:\\Minemap\\!CURRENT\\dev\\shm\\rsync\\smp2\\smp\\World10\\"
 
@@ -53,13 +54,26 @@ print "Z is from %d to %d" % (min_z, max_z)
 image_width = max_x - min_x
 image_height = max_z - min_z
 
-whole_map = Image.new("RGB", (image_width, image_height))
+whole_map = Image.new("RGB", (image_width * 4 + 1, image_height * 4 + 1))
 
 print "Image size: %d by %d" % (image_width, image_height)
+cur_chunk = 0
 
 for chunk in chunks:
 	#if (chunk[0] > min_x) & (chunk[0] < max_x) & (chunk[1] > min_z) & (chunk[1] > max_z):
 	#print chunk
-	whole_map.putpixel((chunk[0] - min_x, chunk[1] - min_z), (111,175,75))
+	try:
+		chunk_image = read_chunk.map_chunk_slice(chunk[0], chunk[1], 70);
+		
+		chunk_image = chunk_image.resize((4,4), Image.ANTIALIAS)
+	except:
+		chunk_image = Image.new("RGB", (4,4))
+	#whole_map.putpixel((chunk[0] - min_x, chunk[1] - min_z), (111,175,75))
+	whole_map.paste(chunk_image, ((chunk[0] - min_x) * 4, (chunk[0] - min_z) * 4, (chunk[0] - min_x) * 4 + 4, (chunk[0] - min_z) * 4 + 4))
+	cur_chunk = cur_chunk + 1
+	if (cur_chunk % 100) == 0:
+		print "%f percent done" % (cur_chunk * 100 / num_chunks)
 	
+# whole_map = whole_map.resize((image_width * 4, image_height * 4), Image.ANTIALIAS)
+
 whole_map.save('whole_map.png')
