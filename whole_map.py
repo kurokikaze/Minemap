@@ -69,7 +69,7 @@ for chunk in chunks:
 	except:
 		chunk_image = Image.new("RGB", (4,4))
 	#whole_map.putpixel((chunk[0] - min_x, chunk[1] - min_z), (111,175,75))
-	whole_map.paste(chunk_image, ((chunk[0] - min_x) * 4, (chunk[0] - min_z) * 4, (chunk[0] - min_x) * 4 + 4, (chunk[0] - min_z) * 4 + 4))
+	whole_map.paste(chunk_image, ((chunk[0] - min_x) * 4, (chunk[1] - min_z) * 4, (chunk[0] - min_x) * 4 + 4, (chunk[1] - min_z) * 4 + 4))
 	cur_chunk = cur_chunk + 1
 	if (cur_chunk % 100) == 0:
 		print "%f percent done" % (cur_chunk * 100 / num_chunks)
