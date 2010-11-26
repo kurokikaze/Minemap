@@ -19,7 +19,7 @@ def read_list_payload(chunk):
 	list_item_type = ord(chunk.read(1))
 	list_length = unpack('>l', chunk.read(4))[0]
 
-	print "%d items of type %s" % (list_length, tag_types[list_item_type])
+#	print "%d items of type %s" % (list_length, tag_types[list_item_type])
 	
 def read_byte(chunk):
 	return ord(chunk.read(1))
@@ -35,7 +35,7 @@ def read_long(chunk):
 			
 def read_byte_array(chunk):
 	length = read_int(chunk)
-	print "Array length: %d" % length
+#	print "Array length: %d" % length
 	payload = chunk.read(length)
 	return payload
 	
@@ -49,7 +49,7 @@ def read_compound(chunk):
 		payload.append(tag)
 		tag_type = tag[0]
 	
-	print "Read %d elements in compound" % len(payload)
+#	print "Read %d elements in compound" % len(payload)
 
 	return payload
 	
@@ -57,7 +57,6 @@ def read_string(chunk):
 	str_length = unpack('>h', chunk.read(2))[0]
 	if (str_length > 0):
 		str = chunk.read(str_length)
-		#print "Name: %s" % name
 	else:
 		str = None
 	return str
@@ -65,11 +64,11 @@ def read_string(chunk):
 # Read entire tag
 def read_tag(chunk):
 	type = ord(chunk.read(1)) # Chunk starts with "10" byte
-	print "Found tag type: %s" % (tag_types[type], )
+#	print "Found tag type: %s" % (tag_types[type], )
 	if (type > 0):
 		name = read_string(chunk)
-		if (name != None):
-			print "Name: %s" % name
+		#if (name != None):
+		#	print "Name: %s" % name
 	else:
 		name = ''
 		
@@ -133,7 +132,9 @@ def map_chunk_slice(x, z, y = 64):
 
 	output = read_tag(chunk)
 
-	print output[0]
+#	print output[0]
+
+	blocks = None
 
 	try:
 		for level in output[2]:
@@ -144,17 +145,19 @@ def map_chunk_slice(x, z, y = 64):
 			for tag in level[2]:
 				if (tag[0] == 0):
 					continue
-				print tag[1]
+	#				print tag[1]
 				if tag[1] == "Blocks":
 					blocks = tag[2]
 					
-		print "Blocks retrieved"
-		print "Blocks count: %d" % len(blocks)
-	except:
-		print "No blocks found"
+#		print "Blocks retrieved"
+#		print "Blocks count: %d" % len(blocks)
+	except:	
+#		print "No blocks found"
 		return Image.new("RGB", (256, 256))
 		#exit(0)
 
+	if blocks == None:
+		return Image.new("RGB", (256, 256))
 	# y = 77
 
 	# Print map by block ID
@@ -190,7 +193,7 @@ def map_chunk_slice(x, z, y = 64):
 	water = terrain.crop(get_cropbox(16,14))
 	lava = terrain.crop(get_cropbox(16,16))
 
-	cobblestone_block = terrain.crop(get_cropbox(0,1))
+	cobblestone = terrain.crop(get_cropbox(0,1))
 	wood_block = terrain.crop(get_cropbox(4,0))
 	# bookshelf = terrain.crop(get_cropbox(4,0))
 	iron_block = terrain.crop(get_cropbox(6,1))
@@ -269,21 +272,21 @@ def map_chunk_slice(x, z, y = 64):
 		
 	return map
 	
-imageLU = map_chunk_slice(-10, 40, 70).crop((0,0,256,256))
-imageRU = map_chunk_slice(-9, 40, 70).crop((0,0,256,256))
-imageLD = map_chunk_slice(-10, 41, 70).crop((0,0,256,256))
-imageRD = map_chunk_slice(-9, 41, 70).crop((0,0,256,256))
+#imageLU = map_chunk_slice(-10, 40, 70).crop((0,0,256,256))
+#imageRU = map_chunk_slice(-9, 40, 70).crop((0,0,256,256))
+#imageLD = map_chunk_slice(-10, 41, 70).crop((0,0,256,256))
+#imageRD = map_chunk_slice(-9, 41, 70).crop((0,0,256,256))
 
-print "Image mode: %s" % imageLU.mode
+#print "Image mode: %s" % imageLU.mode
 
-image = Image.new("RGB", (512, 512))
-image.paste(imageLU, (0,0,256,256))
-image.paste(imageRU, (256,0,512,256))
-image.paste(imageLD, (0,256,256,512))
-image.paste(imageRD, (256,256,512,512))
+#image = Image.new("RGB", (512, 512))
+#image.paste(imageLU, (0,0,256,256))
+#image.paste(imageRU, (256,0,512,256))
+#image.paste(imageLD, (0,256,256,512))
+#image.paste(imageRD, (256,256,512,512))
 
-try:
-	image.save('.\map.png', 'PNG')
-except:
-	print "Something went wrong on save"
+#try:
+#	image.save('.\map.png', 'PNG')
+#except:
+#	print "Something went wrong on save"
 
